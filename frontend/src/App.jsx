@@ -1,58 +1,50 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import Navbar from "./components/Navbar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// Layouts
+import PublicLayout from "./layouts/PublicLayout";
+import DashboardLayout from "./layouts/DashboardLayout";
 
 // Pages
 import Home from "./pages/Home";
-import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import Boardroom from "./pages/Boardroom";
-
-// Guard Component
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/auth" />;
-};
+import Analyzing from "./pages/Analyzing";
+import Report from "./pages/Report";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import DashboardHome from "./pages/dashboard/DashboardHome";
+import HallOfFlame from "./pages/HallOfFlame";
+import VCInterrogation from "./pages/dashboard/VCInterrogation";
+import Settings from "./pages/dashboard/Settings";
+import CompetitorRecon from "./pages/dashboard/CompetitorRecon";
+import BattleMode from "./pages/dashboard/BattleMode";
+import HowItWorks from "./pages/HowItWorks";
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="bg-boardroom-black min-h-screen text-boardroom-text font-sans flex flex-col">
-          <Navbar />
-          <div className="flex-grow">
-            <Routes>
-              {/* Public */}
-              <Route path="/" element={<Home />} />
-              <Route path="/auth" element={<Auth />} />
+    <Router>
+      <Routes>
+        {/* PUBLIC ROUTES (With Navbar/Footer) */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/analyzing" element={<Analyzing />} />
+          <Route path="/report" element={<Report />} />
+          <Route path="/hall-of-flame" element={<HallOfFlame />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+        </Route>
 
-              {/* Protected */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/boardroom/:sessionId?"
-                element={
-                  <ProtectedRoute>
-                    <Boardroom />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </div>
-      </Router>
-    </AuthProvider>
+        {/* AUTH ROUTES (Standalone) */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* DASHBOARD ROUTES (Protected) */}
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="interrogation" element={<VCInterrogation />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="tools/competitor-recon" element={<CompetitorRecon />} />
+          <Route path="tools/battle-mode" element={<BattleMode />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 

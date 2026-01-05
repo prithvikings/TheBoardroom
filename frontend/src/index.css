@@ -149,3 +149,32 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@theme {
+  /* The Boardroom Palette - Extracted from your UI */
+  --color-boardroom-black: #0f0f0f; /* Deepest background */
+  --color-boardroom-dark: #1a1915;  /* Main background (Warm Charcoal) */
+  --color-boardroom-card: #24221d;  /* Card background */
+  --color-boardroom-hover: #2f2d26; /* Hover states */
+  
+  --color-executive-gold: #FFD700;  /* Primary Action (Standard Gold) */
+  --color-executive-gold-hover: #E6C200;
+  --color-gold-muted: #998100;      /* Subdued gold text */
+
+  --color-alert-red: #d62828;       /* "Hard Pass" / Error */
+  --color-success-green: #2d6a4f;   /* High scores */
+}
+
+/* Global Reset for that "Premium" feel */
+:root {
+  background-color: var(--color-boardroom-black);
+  color: #f5f5f5;
+}
+
+/* Utility Class for the "Gold Gradient" text seen in hero */
+.text-gold-gradient {
+  background: linear-gradient(to right, #FFD700, #FDB931);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

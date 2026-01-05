@@ -1,76 +1,76 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Flame, TrendingUp, ShieldAlert } from "lucide-react";
-import API from "../services/api";
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import RoastForm from "../components/RoastForm";
+import RoastLoading from "../components/RoastLoading"; // Import this
+import { useIdea } from "../context/IdeaContext"; // Import this
+import Scorecard from "../components/Scorecard";
 
 const Home = () => {
-  const [ticker, setTicker] = useState([]);
-
-  // Fetch Hall of Flame for the ticker
-  useEffect(() => {
-    const fetchFeed = async () => {
-      try {
-        const { data } = await API.get("/roast/feed");
-        setTicker(data.data || []);
-      } catch (error) {
-        console.error("Failed to load feed");
-      }
-    };
-    fetchFeed();
-  }, []);
+  const { stage } = useIdea(); // Get current stage
 
   return (
-    <div className="relative overflow-hidden">
-      {/* 1. The Ticker (Hall of Flame) */}
-      <div className="bg-boardroom-gold text-black text-xs font-bold py-2 overflow-hidden whitespace-nowrap flex gap-8">
-        {/* Simple CSS animation would go here, for now just static list */}
-        {ticker.map((item, index) => (
-          <span
-            key={index}
-            className="uppercase tracking-widest flex items-center gap-2 opacity-80"
-          >
-            <Flame className="w-3 h-3" />
-            {item.pitch.substring(0, 30)}... : {item.verdict} ({item.score}/100)
-          </span>
-        ))}
-        {ticker.length === 0 && (
-          <span>
-            LOADING MARKET DATA... ANALYZING FAILURES... CRUSHING DREAMS...
-          </span>
-        )}
-      </div>
+    <div className="min-h-screen bg-background pt-24 pb-12 px-4 relative overflow-hidden">
+      {/* Background Ambience */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* 2. Hero Section */}
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-boardroom-dark border border-boardroom-gray text-xs text-boardroom-gold mb-6 animate-pulse">
-          <ShieldAlert className="w-3 h-3" />
-          <span>Warning: Brutal Honesty Inside</span>
+      <div className="container mx-auto max-w-4xl relative z-10">
+        {/* HERO TEXT - Only show during input stage to reduce clutter during loading? 
+            Or keep it? Let's keep it but maybe dim it. */}
+        <div
+          className={`text-center mb-16 space-y-6 transition-opacity duration-500 ${
+            stage !== "input" ? "opacity-50" : "opacity-100"
+          }`}
+        >
+          <h1 className="text-5xl md:text-7xl font-serif font-bold text-foreground leading-tight">
+            Your Business Idea <br />
+            <span className="text-primary italic">Is Probably Trash.</span>
+          </h1>
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
-          Get <span className="text-boardroom-gold">Roasted</span>
-          <br />
-          to Get Rich.
-        </h1>
+        {/* THE INTERACTION LAYER - SWAP COMPONENTS HERE */}
+        <AnimatePresence mode="wait">
+          {stage === "input" && (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <RoastForm />
+            </motion.div>
+          )}
 
-        <p className="text-xl text-boardroom-muted mb-10 max-w-2xl mx-auto">
-          90% of startups fail because founders lie to themselves. Our AI Sharks
-          don't have feelings. They have data. Validate your idea before you
-          waste your life.
-        </p>
+          {stage === "result" && (
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Scorecard />
+            </motion.div>
+          )}
 
-        {/* 3. The Input Area (Placeholder for Component) */}
-        <div className="bg-boardroom-dark border border-boardroom-gray p-8 rounded-2xl shadow-2xl max-w-2xl mx-auto">
-          <h3 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-            <TrendingUp className="text-boardroom-gold" />
-            Pitch Your Idea (Anonymous)
-          </h3>
+          {stage === "roasting" && (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <RoastLoading />
+            </motion.div>
+          )}
 
-          {/* We will build the RoastForm component next and put it here */}
-          <div className="border border-dashed border-boardroom-gray rounded-lg p-12 text-center text-boardroom-muted">
-            [Roast Form Component Will Go Here]
-          </div>
-        </div>
+          {/* We will add the Result component in the next step */}
+          {stage === "result" && (
+            <div className="text-white text-center text-2xl font-serif">
+              RESULT COMPONENT GOES HERE
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

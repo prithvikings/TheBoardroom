@@ -1,59 +1,47 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { Flame, LayoutDashboard, LogOut, User } from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button"; // Assuming you have Shadcn button
 
 const Navbar = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
   return (
-    <nav className="border-b border-boardroom-gray bg-boardroom-black/50 backdrop-blur-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="bg-boardroom-gold p-1.5 rounded-lg group-hover:rotate-12 transition-transform">
-              <Flame className="text-black w-5 h-5" />
-            </div>
-            <span className="font-serif font-bold text-xl tracking-tight text-white">
-              The<span className="text-boardroom-gold">Boardroom</span>
+    <nav className="fixed top-0 w-full z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Logo - Serif font for authority */}
+        <Link to="/" className="flex items-center gap-2">
+          <div className="h-8 w-8 bg-primary rounded-sm flex items-center justify-center">
+            <span className="text-primary-foreground font-poppins font-bold text-xl">
+              B
             </span>
-          </Link>
-
-          {/* Actions */}
-          <div className="flex items-center gap-4">
-            {isAuthenticated ? (
-              <>
-                <Link
-                  to="/dashboard"
-                  className="hidden md:flex items-center gap-2 text-sm font-medium text-boardroom-muted hover:text-boardroom-gold transition-colors"
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                to="/auth"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-boardroom-dark border border-boardroom-gray hover:border-boardroom-gold transition-all text-sm font-medium"
-              >
-                <User className="w-4 h-4" />
-                Sign In
-              </Link>
-            )}
           </div>
+          <span className="text-xl font-poppins font-bold tracking-tight text-foreground">
+            The Boardroom
+          </span>
+        </Link>
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+          <Link
+            to="/hall-of-flame"
+            className="hover:text-primary transition-colors"
+          >
+            Hall of Flame
+          </Link>
+          <Link to="/about" className="hover:text-primary transition-colors">
+            Manifesto
+          </Link>
+        </div>
+
+        {/* CTA - The "Hook" */}
+        <div className="flex items-center gap-4">
+          <Link
+            to="/auth"
+            className="text-sm font-medium hover:text-foreground text-muted-foreground hidden sm:block"
+          >
+            Log In
+          </Link>
+          <Button className="font-inter font-bold tracking-wide">
+            Get Roasted
+          </Button>
         </div>
       </div>
     </nav>
